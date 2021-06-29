@@ -70,16 +70,15 @@ always_ff @(posedge clk_i or negedge rst_n_i) begin
     A_d <= 16'b0;
     res <= 16'b0;
   end else begin
-    if (start & ~|go) begin
-      go <= 1'b1;
-      cnt <= 3'b1;
+    if (start & ~|cnt) begin
+      cnt <= cnt + 1;
       res <={8'b0, A_i & {8{B_i[0]}}};
       A_d <= {7'b0, A_i, 1'b0};
       B_d <= {1'b0, B_i[8:1]};
-    end else if (|go) begin
-      res <= res + (A_i & {16{B_i[0]}});
+    end else if (|cnt) begin
+      res <= res + (A_d & {16{B_i[0]}});
       B_d <= {1'b0}, B_d[8:1]};
-      A_i <= {A_i[14:0], 1'b0};
+      A_d <= {A_d[14:0], 1'b0};
       cnt <= cnt + 1;
     end
   end
